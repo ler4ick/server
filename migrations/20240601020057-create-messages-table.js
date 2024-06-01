@@ -8,7 +8,6 @@ module.exports = {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
-        defaultValue: Sequelize.UUIDV4,
       },
       id_sender: {
         type: Sequelize.INTEGER,
