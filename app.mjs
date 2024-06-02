@@ -26,6 +26,11 @@ app.use("/users", usersController);
 // global error handler
 app.use(errorHandler);
 
+// Настройка CORS
+// app.use(
+//   cors()
+// );
+
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
@@ -85,7 +90,7 @@ io.on("connection", async (socket) => {
       return;
     }
     // include the offset with the message
-    io.emit("chat message", msg, result.dataValues.id);
+    io.emit("chat message", msg);
 
     // acknowledge the event
     callback();
@@ -120,24 +125,28 @@ app.get("/api/hello", (req, res) => {
 });
 
 // Маршрут для отправки сообщений
-app.post("/api/messages", (req, res) => {
-  console.log("Полученные данные:", req.body, req.files);
+// app.post("/api/messages", (req, res) => {
+//   console.log("Полученные данные:", req.body, req.files);
 
-  if (!req.files || Object.keys(req.files).length === 0) {
-    // Если нет файлов, то данные должны быть в req.body
-    console.log("Данные в req.body:", req.body);
-    // Здесь вы можете добавить логику сохранения сообщения в базе данных или другую обработку
-    res.json({ status: "success" });
-  } else {
-    // Если есть файлы, то данные будут в req.files
-    console.log("Данные в req.files:", req.files);
-    // Здесь вы можете добавить логику сохранения сообщения и файлов в базе данных или другую обработку
-    res.json({ status: "success" });
-  }
-});
+//   if (!req.files || Object.keys(req.files).length === 0) {
+//     // Если нет файлов, то данные должны быть в req.body
+//     console.log("Данные в req.body:", req.body);
+//     // Здесь вы можете добавить логику сохранения сообщения в базе данных или другую обработку
+//     res.json({ status: "success" });
+//   } else {
+//     // Если есть файлы, то данные будут в req.files
+//     console.log("Данные в req.files:", req.files);
+//     // Здесь вы можете добавить логику сохранения сообщения и файлов в базе данных или другую обработку
+//     res.json({ status: "success" });
+//   }
+// });
 
 const PORT = process.env.PORT || 3000;
 
 io.listen(PORT, () => {
   console.log(`Сервер запущен на порту ${PORT}`);
 });
+
+app.listen(3001, () => {
+  console.log('started app on 3001')
+})
