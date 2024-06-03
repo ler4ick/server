@@ -96,19 +96,21 @@ io.on("connection", async (socket) => {
     callback();
   });
 
-  socket.on("get-room-messages", async (roomId) => {
-    console.log("roomId: " + roomId);
+  socket.on("get-room-messages", async (roomId, callback) => {
     // Получение сообщений из базы данных по roomId
-    try{ 
-    const [results] = await connection.query(`SELECT * FROM messages WHERE id_chat = ${roomId}`)
-     
+    try {
+      console.log("roomId: " + roomId);
+      const [results] = await connection.query(
+        `SELECT * FROM messages WHERE id_chat = ${roomId}`
+      );
       // Отправка сообщений обратно клиенту
       console.log(results);
-      socket.emit('room-messages', results);
-    
-  } catch(e) {
-    console.log(e);
-  }
+      socket.emit("room-messages", results);
+
+      callback();
+    } catch (e) {
+      console.log(e);
+    }
   });
 
   if (!socket.recovered) {
@@ -163,5 +165,5 @@ io.listen(PORT, () => {
 });
 
 app.listen(3001, () => {
-  console.log('started app on 3001')
-})
+  console.log("started app on 3001");
+});
