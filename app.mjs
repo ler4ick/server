@@ -65,16 +65,16 @@ io.on("connection", async (socket) => {
   console.log("a user connected");
 
   socket.on("chat message", async (msg, clientOffset, callback) => {
-    console.log("message: " + msg);
+    console.log("message: " + msg.content);
 
     let result;
     try {
       // store the message in the database
       result = await db.Message.create({
-        id_sender: 2,
-        id_chat: 2,
-        timestamp: clientOffset,
-        content: msg,
+        id_sender: msg.id_creator,
+        id_chat: msg.id_room,
+        timestamp: msg.date,
+        content: msg.content,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -94,6 +94,21 @@ io.on("connection", async (socket) => {
 
     // acknowledge the event
     callback();
+  });
+
+  socket.on("get-room-messages", async (roomId) => {
+    console.log("roomId: " + roomId);
+    // Получение сообщений из базы данных по roomId
+    try{ 
+    const [results] = await connection.query(`SELECT * FROM messages WHERE id_chat = ${roomId}`)
+     
+      // Отправка сообщений обратно клиенту
+      console.log(results);
+      socket.emit('room-messages', results);
+    
+  } catch(e) {
+    console.log(e);
+  }
   });
 
   if (!socket.recovered) {
