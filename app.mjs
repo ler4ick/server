@@ -74,7 +74,7 @@ io.on("connection", async (socket) => {
       // store the message in the database
 
       result = await db.Message.create({
-        id_sender: msg.id_creator,
+        id_sender: msg.id_sender,
         id_chat: msg.id_room,
         timestamp: msg.timestamp,
         content: msg.content,
