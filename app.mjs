@@ -7,6 +7,7 @@ import jwt from "./_helpers/jwt.mjs";
 import errorHandler from "./_helpers/error-handler.mjs";
 
 import usersController from "./services/users/users.controller.mjs";
+import roomsController from "./services/rooms/rooms.controller.mjs";
 import config from "./config/config.json" assert { type: "json" };
 import { connection } from "./utils/createConnection.mjs";
 
@@ -22,6 +23,7 @@ app.use(jwt());
 
 // api routes
 app.use("/users", usersController);
+app.use("/rooms", roomsController);
 
 // global error handler
 app.use(errorHandler);
@@ -70,10 +72,11 @@ io.on("connection", async (socket) => {
     let result;
     try {
       // store the message in the database
+
       result = await db.Message.create({
         id_sender: msg.id_creator,
         id_chat: msg.id_room,
-        timestamp: msg.date,
+        timestamp: msg.timestamp,
         content: msg.content,
         createdAt: new Date(),
         updatedAt: new Date(),
