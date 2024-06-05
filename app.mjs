@@ -12,6 +12,7 @@ import config from "./config/config.json" assert { type: "json" };
 import { connection } from "./utils/createConnection.mjs";
 
 import db from "./models/index.js";
+import { where } from "sequelize";
 
 const app = express();
 
@@ -62,7 +63,7 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-
+console.log(db.Message);
 io.on("connection", async (socket) => {
   console.log("a user connected");
 
@@ -97,6 +98,50 @@ io.on("connection", async (socket) => {
 
     // acknowledge the event
     callback();
+  });
+
+  socket.on("edit message", async (msg, callback) => {
+    if (msg.id) {
+      try {
+        const messageToEdit = await db.Message.findOne({
+          where: {
+            id: msg.id,
+          },
+        });
+        if (messageToEdit) {
+          await messageToEdit.update({
+            content: msg.content,
+          });
+          console.log("server message to edit: ", messageToEdit);
+          socket.emit("edit message", messageToEdit);
+        }
+        callback();
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    }
+  });
+
+  socket.on("delete message", async (id, callback) => {
+    if (id) {
+      try {
+        const messageToDelete = await db.Message.findOne({
+          where: {
+            id,
+          },
+        });
+        if (messageToDelete) {
+          await messageToDelete.destroy();
+
+          socket.emit("delete message", id);
+        }
+        callback();
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    }
   });
 
   socket.on("get-room-messages", async (roomId, callback) => {
