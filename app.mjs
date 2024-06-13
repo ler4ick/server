@@ -12,7 +12,6 @@ import config from "./config/config.json" assert { type: "json" };
 import { connection } from "./utils/createConnection.mjs";
 
 import db from "./models/index.js";
-import { where } from "sequelize";
 
 const app = express();
 
@@ -94,7 +93,8 @@ io.on("connection", async (socket) => {
       return;
     }
     // include the offset with the message
-    io.emit("chat message", msg);
+    io.emit("chat message", result);
+    io.emit("updateLastMessage", result);
 
     // acknowledge the event
     callback();
