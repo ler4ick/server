@@ -113,7 +113,7 @@ io.on("connection", async (socket) => {
             content: msg.content,
           });
           console.log("server message to edit: ", messageToEdit);
-          socket.emit("edit message", messageToEdit);
+          io.emit("edit message", messageToEdit);
         }
         callback();
       } catch (error) {
@@ -134,7 +134,7 @@ io.on("connection", async (socket) => {
         if (messageToDelete) {
           await messageToDelete.destroy();
 
-          socket.emit("delete message", id);
+          io.emit("delete message", id);
         }
         callback();
       } catch (error) {

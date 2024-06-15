@@ -22,8 +22,6 @@ export async function getRoomsById({ id }) {
     WHERE c.id_person_1 = ${id} OR c.id_person_2 = ${id}`
     );
 
-    console.log(results);
-
     return results;
   } catch (e) {
     throw e;
